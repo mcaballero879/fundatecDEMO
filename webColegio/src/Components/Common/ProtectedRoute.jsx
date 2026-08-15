@@ -1,4 +1,3 @@
-import React from 'react';
 
 export const ProtectedRoute = ({ currentUser, allowedRoles, children }) => {
   // 1. Si no hay usuario logueado, redirige o bloquea el acceso
