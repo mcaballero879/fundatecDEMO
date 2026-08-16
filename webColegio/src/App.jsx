@@ -1,15 +1,15 @@
 import { useState, useEffect } from 'react';
-import { Timer } from './components/Timer.jsx'
-import { QuestionCard } from './components/QuestionCard.jsx';
-import { ExamNavigation } from './components/ExamNavigation.jsx'
-import { ExamResult } from './components/ExamResult.jsx';
-import { ProtectedRoute } from './components/common/ProtectedRoute.jsx';
-import { UserManagement } from './components/admin/UserManagement.jsx';
-import { ExamManagement } from './components/admin/ExamManagement.jsx';
+import { Timer } from './componentes/Timer.jsx'
+import { QuestionCard } from './componentes/QuestionCard.jsx';
+import { ExamNavigation } from './componentes/ExamNavigation.jsx'
+import { ExamResult } from './componentes/ExamResult.jsx';
+import { ProtectedRoute } from './componentes/common/ProtectedRoute.jsx';
+import { UserManagement } from './componentes/admin/UserManagement.jsx';
+import { ExamManagement } from './componentes/admin/ExamManagement.jsx';
 import { examService } from './services/examService';
 import { authService } from './services/authService'; 
-import { Footer } from './components/layout/Footer.jsx';
-import { Header } from './components/Layout/Header.jsx';
+import { Footer } from './componentes/layout/Footer.jsx';
+import { Header } from './componentes/layout/Header.jsx';
 import './assets/css/index.css';
 
 export default function App() {
