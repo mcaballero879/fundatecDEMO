@@ -4,7 +4,8 @@ import { QuestionCard } from './componentes/QuestionCard.jsx';
 import { ExamNavigation } from './componentes/ExamNavigation.jsx'
 import { ExamResult } from './componentes/ExamResult.jsx';
 import { ProtectedRoute } from './componentes/common/ProtectedRoute.jsx';
-import { UserManagement } from './componentes/admin/UserManagement.jsx';
+import { StudentManagement } from './componentes/admin/StudentManagement.jsx';
+import { TeacherManagement } from './componentes/admin/TeacherManagement.jsx';
 import { ExamManagement } from './componentes/admin/ExamManagement.jsx';
 import { examService } from './services/examService';
 import { authService } from './services/authService'; 
@@ -41,7 +42,6 @@ export default function App() {
     e.preventDefault();
     try {
       if (isRegistering) {
-        // Validar longitud de contraseña en el cliente antes de enviar
         if (authData.password.length < 8) {
           alert('La contraseña debe tener al menos 8 caracteres.');
           return;
@@ -51,7 +51,6 @@ export default function App() {
         setIsRegistering(false);
         setAuthData({ name: '', DNI: '', email: '', password: '', role: 'student' });
       } else {
-        // Validación con el backend usando correo, DNI y contraseña
         const loggedUser = await authService.login({
           email: authData.email,
           DNI: authData.DNI,
@@ -67,7 +66,6 @@ export default function App() {
     }
   };
 
-  // Función integrada para obtener los exámenes filtrados/autorizados según el rol y email
   const fetchAuthorizedExams = async (user) => {
     try {
       setLoading(true);
@@ -179,15 +177,16 @@ export default function App() {
         </div>
       )}
 
-      {/* Selector de Vistas según Rol (Admin, Teacher, Student) */}
+      {/* Selector de Vistas según Rol */}
       {step === 'select' && (
         <ProtectedRoute currentUser={currentUser}>
           <div style={{ width: '100%', maxWidth: '800px', margin: '0 auto' }}>
             
-            {/* Vistas exclusivas para ADMIN */}
+            {/* Vistas exclusivas para ADMIN (Botones actualizados) */}
             {currentUser?.role === 'admin' && (
               <div style={{ marginBottom: '20px', display: 'flex', gap: '10px', justifyContent: 'center' }}>
-                <button onClick={() => setStep('manage-users')} className="btn-secondary">Gestionar Usuarios</button>
+                <button onClick={() => setStep('manage-students')} className="btn-secondary">Gestionar Alumnos</button>
+                <button onClick={() => setStep('manage-teachers')} className="btn-secondary">Gestionar Profesores</button>
                 <button onClick={() => setStep('manage-exams')} className="btn-secondary">Crear Examen (Admin)</button>
               </div>
             )}
@@ -199,7 +198,7 @@ export default function App() {
               </div>
             )}
 
-            {/* Lista de Exámenes Permitidos / Autorizados */}
+            {/* Lista de Exámenes Disponibles */}
             <div className="card" style={{ maxWidth: '100%' }}>
               <h2>Exámenes Disponibles</h2>
               {loading ? (
@@ -249,12 +248,22 @@ export default function App() {
         </ProtectedRoute>
       )}
 
-      {/* Pantallas de Gestión Administrativa / Docente de Usuarios */}
-      {step === 'manage-users' && (
+      {/* Pantalla de Gestión de Alumnos */}
+      {step === 'manage-students' && (
         <ProtectedRoute currentUser={currentUser} allowedRoles={['admin']}>
           <div>
             <button onClick={() => setStep('select')} className="btn-secondary" style={{ margin: '15px' }}>← Volver</button>
-            <UserManagement />
+            <StudentManagement />
+          </div>
+        </ProtectedRoute>
+      )}
+
+      {/* Pantalla de Gestión de Profesores */}
+      {step === 'manage-teachers' && (
+        <ProtectedRoute currentUser={currentUser} allowedRoles={['admin']}>
+          <div>
+            <button onClick={() => setStep('select')} className="btn-secondary" style={{ margin: '15px' }}>← Volver</button>
+            <TeacherManagement />
           </div>
         </ProtectedRoute>
       )}
@@ -269,7 +278,7 @@ export default function App() {
         </ProtectedRoute>
       )}
 
-      {/* NUEVO: Panel específico para autorizar / desautorizar alumnos de un examen seleccionado */}
+      {/* Panel para autorizar / desautorizar alumnos de un examen seleccionado */}
       {step === 'manage-exam-students' && examData && (
         <ProtectedRoute currentUser={currentUser} allowedRoles={['admin', 'teacher']}>
           <div className="card" style={{ maxWidth: '700px', margin: '20px auto' }}>
@@ -298,7 +307,6 @@ export default function App() {
                       await examService.toggleStudentAccess(examData._id, email, true);
                       alert(`Alumno ${email} autorizado correctamente.`);
                       emailInput.value = '';
-                      // Recargar datos actualizados del examen
                       const updatedExams = await examService.getAuthorizedExams(currentUser.role, currentUser.email);
                       setExamList(Array.isArray(updatedExams) ? updatedExams : [updatedExams]);
                       const current = updatedExams.find(e => e._id === examData._id);

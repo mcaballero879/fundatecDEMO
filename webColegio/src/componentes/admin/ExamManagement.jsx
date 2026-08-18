@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { examService } from '../../services/examService';
 
 export const ExamManagement = ({ currentUser }) => {

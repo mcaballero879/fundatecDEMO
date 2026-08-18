@@ -20,5 +20,26 @@ export const userService = {
         } catch (error) {
             throw error.response?.data?.error || "Error al crear el usuario";
         }
+    },
+
+    // Actualizar un usuario existente
+    updateUser: async (id, userData) => {
+        try {
+            // Verifica que lleve la barra '/' separando la ruta del id
+            const response = await api.put(`/api/v1/usuarios/${id}`, userData);
+            return response.data;
+        } catch (error) {
+            throw error.response?.data?.error || "Error al actualizar el usuario";
+        }
+    },
+
+    // Eliminar un usuario
+    deleteUser: async (id) => {
+        try {
+            const response = await api.delete(`/api/v1/usuarios/definitivo/${id}`);
+            return response.data;
+        } catch (error) {
+            throw error.response?.data?.error || "Error al eliminar el usuario";
+        }
     }
 };
